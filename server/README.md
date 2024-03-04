@@ -52,3 +52,7 @@
 | `--timer` | timer | 定时器接口封装 |
 | `--upload`      | oss                  | oss接口封装        |
 
+# 后台接口可采用 Mock 数据，感谢以下 Mock 平台支持：
+
+FastMock： https://www.fastmock.site
+EasyMock：https://mock.mengxuegu.com
