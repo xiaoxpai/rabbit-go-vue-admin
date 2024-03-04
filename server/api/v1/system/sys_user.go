@@ -51,7 +51,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 
 	if !oc || (l.CaptchaId != "" && l.Captcha != "" && store.Verify(l.CaptchaId, l.Captcha, true)) {
 		u := &system.SysUser{Username: l.Username, Password: l.Password}
-		user, err := userService.Login(u)
+		user, err := userService.Login(u) //TODO 对用户做数据库校验
 		if err != nil {
 			global.GVA_LOG.Error("登陆失败! 用户名不存在或者密码错误!", zap.Error(err))
 			// 验证码次数+1
@@ -66,7 +66,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 			response.FailWithMessage("用户被禁止登录", c)
 			return
 		}
-		b.TokenNext(c, *user)
+		b.TokenNext(c, *user) // 登录成功，签发jwt
 		return
 	}
 	// 验证码次数+1
@@ -85,6 +85,8 @@ func (b *BaseApi) TokenNext(c *gin.Context, user system.SysUser) {
 		AuthorityId: user.AuthorityId,
 	})
 	token, err := j.CreateToken(claims)
+	//这里是颁发的令牌
+	//fmt.Println("颁发的令牌：%w", token)
 	if err != nil {
 		global.GVA_LOG.Error("获取token失败!", zap.Error(err))
 		response.FailWithMessage("获取token失败", c)
